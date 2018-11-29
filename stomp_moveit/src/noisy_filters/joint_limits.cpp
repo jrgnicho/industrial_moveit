@@ -117,8 +117,15 @@ bool JointLimits::setMotionPlanRequest(const planning_scene::PlanningSceneConstP
   if(lock_goal_)
   {
     bool goal_state_saved = false;
+    bool has_joint_constraints = false;
     for(auto& gc: req.goal_constraints)
     {
+
+      if (gc.joint_constraints.empty())
+          continue;
+      else
+          has_joint_constraints = true;
+
       for(auto& jc : gc.joint_constraints)
       {
         goal_state_->setVariablePosition(jc.joint_name,jc.position);
@@ -133,7 +140,7 @@ bool JointLimits::setMotionPlanRequest(const planning_scene::PlanningSceneConstP
       break;
     }
 
-    if(!goal_state_saved)
+    if(has_joint_constraints && !goal_state_saved)
     {
       ROS_ERROR_STREAM("Failed to save goal state");
       return false;
