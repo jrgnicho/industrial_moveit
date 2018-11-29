@@ -283,6 +283,9 @@ bool GoalGuidedMultivariateGaussian::generateNoise(const Eigen::MatrixXd& parame
         raw_noise_.size(),0,std::abs(goal_joint_noise(d)));
   }
 
+  // we don't need extra noise at the goal, total noise could then exceed goal tolerance
+  noise.rightCols(1) = goal_joint_noise;
+
   parameters_noise = parameters + noise;
 
   return true;
