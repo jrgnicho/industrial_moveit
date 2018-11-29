@@ -264,6 +264,7 @@ bool Stomp::solve(const Eigen::MatrixXd& initial_parameters,
     }
     else
     {
+      ROS_DEBUG_COND(valid_iterations>0, "Solution is no longer valid, resetting valid_iterations");
       valid_iterations = 0;
     }
 
@@ -818,6 +819,10 @@ bool Stomp::computeOptimizedCost()
     {
       // reverting updates as no improvement was made
       parameters_optimized_ -= parameters_updates_;
+
+      // is now valid again
+      if (parameters_valid_prev_)
+        parameters_valid_ = true;
     }
   }
 
